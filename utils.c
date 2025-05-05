@@ -22,7 +22,7 @@ long get_elapsed_time(t_philo *philo)
 
 void print_state(t_philo *philo, char *msg)
 {
-	if (!philo->data->sim_end)
+	if (!is_sim_end(philo->data))
 	{
 		pthread_mutex_lock(&philo->data->write_lock);
 		printf("%ld %d %s\n", get_elapsed_time(philo), philo->philo_id, msg);

@@ -70,4 +70,5 @@ int parsing(char const *argv[])
             return (-1);
         i++;
     }
+    return (0);
 }

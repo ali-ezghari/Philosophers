@@ -53,8 +53,8 @@ int ft_sleep(long mill, t_data *data)
     start = get_time_in__ms();
     while ((get_time_in__ms() - start) < mill)
     {
-        if (is_sim_end(data))
-            return (-1);
+        // if (is_sim_end(data))
+        //     return (-1);
         usleep(200);
     }
     return (0);

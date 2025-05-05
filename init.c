@@ -43,10 +43,8 @@ void *philos(void *arg)
         one_philo_case(philo);
         return (NULL);
     }
-    if (philo->philo_id % 2 == 0)
-    {
-        usleep(500); // philo->data->time_to_eat / 2 * 1000
-    }
+    if (philo->philo_id % 2)
+        usleep(500);
     routine(philo);
     return (NULL);
 }

@@ -21,12 +21,20 @@ static int check_number_meals(t_philo *philo)
 
 int p_eat(t_philo *philo)
 {
-    if (is_sim_end(philo->data))
-        return (-1);
-    pthread_mutex_lock(philo->right_fork);
-    print_state(philo, "has taken a fork");
-    pthread_mutex_lock(philo->left_fork);
-    print_state(philo, "has taken a fork");
+    if (philo->philo_id % 2 == 0)
+    {
+        pthread_mutex_lock(philo->left_fork);
+        print_state(philo, "has taken a fork");
+        pthread_mutex_lock(philo->right_fork);
+        print_state(philo, "has taken a fork");
+    }
+    else
+    {
+        pthread_mutex_lock(philo->right_fork);
+        print_state(philo, "has taken a fork");
+        pthread_mutex_lock(philo->left_fork);
+        print_state(philo, "has taken a fork");
+    }
     print_state(philo, "is eating");
     pthread_mutex_lock(&philo->data->meals_lock);
     philo->meals_eaten++;

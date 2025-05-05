@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = #-g -fsanitize=thread #-Wall -Wextra -Werror 
+CFLAGS = -g -fsanitize=thread #-Wall -Wextra -Werror
 
 TARGET = philo
 
