@@ -38,6 +38,8 @@ typedef struct s_data
 
     pthread_mutex_t write_lock;
     pthread_mutex_t death_lock;
+    pthread_mutex_t meals_lock;
+
     pthread_mutex_t *forks;
 
     pthread_t monitor;
@@ -59,20 +61,19 @@ int thread_init(t_data *data);
 int p_eat(t_philo *philo);
 int p_sleep(t_philo *philo);
 int p_think(t_philo *philo);
-int ft_sleep(long mill);
+int ft_sleep(long mill, t_data *data);
 
 // utils function
 void print_state(t_philo *philo, char *msg);
 long get_time_in__ms(void);
 long get_elapsed_time(t_philo *philo);
-void join_philo_threads(t_data *data, int count);
+// void join_philo_threads(t_data *data, int count);
 
 // check simulation end functions
 bool all_eat_enough(t_data *data);
 bool exceed_time_to_die(t_data *data);
 void one_philo_case(t_philo *philo);
 int is_sim_end(t_data *data);
-bool check_meals(t_philo *philo);
 
 // error print functions
 int mutex_init_err(void);

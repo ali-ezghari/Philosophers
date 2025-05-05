@@ -3,7 +3,7 @@ CFLAGS = #-g -fsanitize=thread #-Wall -Wextra -Werror
 
 TARGET = philo
 
-SRCS = philo.c init.c parsing.c utils.c errors.c actions.c utils2.c utils2.c cleanup.c
+SRCS = philo.c init.c parsing.c utils.c errors.c actions.c checks.c cleanup.c
 
 OBJS = $(SRCS:.c=.o)
 

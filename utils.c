@@ -22,9 +22,12 @@ long get_elapsed_time(t_philo *philo)
 
 void print_state(t_philo *philo, char *msg)
 {
-	pthread_mutex_lock(&philo->data->write_lock); // lock the mutex to avoid multiple threads writing at the same time
-	printf("%ld %d %s\n", get_elapsed_time(philo), philo->philo_id, msg);
-	pthread_mutex_unlock(&philo->data->write_lock);
+	if (!philo->data->sim_end)
+	{
+		pthread_mutex_lock(&philo->data->write_lock);
+		printf("%ld %d %s\n", get_elapsed_time(philo), philo->philo_id, msg);
+		pthread_mutex_unlock(&philo->data->write_lock);
+	}
 }
 
 int is_sim_end(t_data *data)
@@ -39,12 +42,23 @@ int is_sim_end(t_data *data)
 
 void one_philo_case(t_philo *philo)
 {
-    pthread_mutex_lock(philo->right_fork);
-    print_state(philo, "has taken a fork");
-    pthread_mutex_unlock(philo->right_fork);
-    usleep(philo->data->time_to_die * 1000);
-    print_state(philo, "died");
-    pthread_mutex_lock(&philo->data->death_lock);
-    philo->data->sim_end = true;
-    pthread_mutex_unlock(&philo->data->death_lock);
+	pthread_mutex_lock(philo->right_fork);
+	print_state(philo, "has taken a fork");
+	pthread_mutex_unlock(philo->right_fork);
+	usleep(philo->data->time_to_die * 1000);
+	print_state(philo, "died");
+	pthread_mutex_lock(&philo->data->death_lock);
+	philo->data->sim_end = true;
+	pthread_mutex_unlock(&philo->data->death_lock);
 }
+// void join_philo_threads(t_data *data, int count)
+// {
+//     int i = 0;
+//     while (i < count)
+//     {
+//         if (pthread_join(data->philo[i].p_thread, NULL) != 0)
+//             printf("Failed to join thread %d\n", i);
+//         i++;
+//     }
+// }
+

@@ -11,19 +11,29 @@ static void *monitor_fun(void *arg)
         {
             break;
         }
-        pthread_mutex_lock(&data->death_lock);
-        if (data->full_philos == data->num_philos)
+        if (all_eat_enough(data) == true)
         {
-            pthread_mutex_unlock(&data->death_lock);
             break;
         }
-        pthread_mutex_unlock(&data->death_lock);
         usleep(500);
     }
     return (NULL);
 }
 
-static void *routine(void *arg)
+static void routine(t_philo *philo)
+{
+    while (!is_sim_end(philo->data))
+    {
+        if (p_eat(philo) == -1)
+            break;
+        if (p_sleep(philo) == -1)
+            break;
+        if (p_think(philo) == -1)
+            break;
+    }
+}
+
+void *philos(void *arg)
 {
     t_philo *philo;
 
@@ -35,17 +45,9 @@ static void *routine(void *arg)
     }
     if (philo->philo_id % 2 == 0)
     {
-        usleep(1000);
+        usleep(500); // philo->data->time_to_eat / 2 * 1000
     }
-    while (!is_sim_end(philo->data))
-    {
-        if (p_eat(philo) == -1)
-            break;
-        if (p_sleep(philo) == -1)
-            break;
-        if (p_think(philo) == -1)
-            break;
-    }
+    routine(philo);
     return (NULL);
 }
 
@@ -65,10 +67,9 @@ int data_init(t_data *data, char const *argv[])
     data->sim_end = false;
     data->full_philos = 0;
     gettimeofday(&data->start_time, NULL);
-    if (pthread_mutex_init(&(data->write_lock), NULL) != 0)
-        return (destroy_free(data, false), mutex_init_err());
-    if (pthread_mutex_init(&(data->death_lock), NULL) != 0)
-        return (destroy_free(data, true), mutex_init_err());
+    pthread_mutex_init(&(data->meals_lock), NULL);
+    pthread_mutex_init(&(data->write_lock), NULL);
+    pthread_mutex_init(&(data->death_lock), NULL);
     return (0);
 }
 
@@ -105,15 +106,12 @@ int thread_init(t_data *data)
 
     i = -1;
     while (++i < data->num_philos)
-        if (pthread_create(&data->philo[i].p_thread, NULL, routine, &data->philo[i]) != 0)
-            return (join_philo_threads(data, i), thread_err(data));
-    if (pthread_create(&data->monitor, NULL, monitor_fun, data) != 0)
-        return (join_philo_threads(data, i), thread_err(data));
+        pthread_create(&data->philo[i].p_thread, NULL, philos, &data->philo[i]);
+    pthread_create(&data->monitor, NULL, monitor_fun, data);
+
     i = -1;
     while (++i < data->num_philos)
-        if (pthread_join(data->philo[i].p_thread, NULL) != 0)
-            return (thread_err(data));
-    if (pthread_join(data->monitor, NULL) != 0)
-        return (thread_err(data));
+        pthread_join(data->philo[i].p_thread, NULL);
+    pthread_join(data->monitor, NULL);
     return (0);
 }
