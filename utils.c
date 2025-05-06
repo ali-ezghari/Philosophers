@@ -1,26 +1,39 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   utils.c                                            :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aezghari <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/05/06 10:58:32 by aezghari          #+#    #+#             */
+/*   Updated: 2025/05/06 10:58:50 by aezghari         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-long get_time_in__ms(void)
+long	get_time_in__ms(void)
 {
-	struct timeval curr_time;
-	long now;
+	struct timeval	curr_time;
+	long			now;
 
 	gettimeofday(&curr_time, NULL);
 	now = (curr_time.tv_sec * 1000) + (curr_time.tv_usec / 1000);
 	return (now);
 }
 
-long get_elapsed_time(t_philo *philo)
+long	get_elapsed_time(t_philo *philo)
 {
-	struct timeval curr_time;
-	long elapsed_ms;
+	struct timeval	curr_time;
+	long			elapsed_ms;
 
 	gettimeofday(&curr_time, NULL);
-	elapsed_ms = (curr_time.tv_sec - philo->data->start_time.tv_sec) * 1000 + (curr_time.tv_usec - philo->data->start_time.tv_usec) / 1000; // calculating the time that goes by since the simulation started
+	elapsed_ms = (curr_time.tv_sec - philo->data->start_time.tv_sec) * 1000
+		+ (curr_time.tv_usec - philo->data->start_time.tv_usec) / 1000;
 	return (elapsed_ms);
 }
 
-void print_state(t_philo *philo, char *msg)
+void	print_state(t_philo *philo, char *msg)
 {
 	if (!is_sim_end(philo->data))
 	{
@@ -30,7 +43,7 @@ void print_state(t_philo *philo, char *msg)
 	}
 }
 
-void one_philo_case(t_philo *philo)
+void	one_philo_case(t_philo *philo)
 {
 	pthread_mutex_lock(philo->right_fork);
 	print_state(philo, "has taken a fork");
@@ -41,14 +54,16 @@ void one_philo_case(t_philo *philo)
 	philo->data->sim_end = true;
 	pthread_mutex_unlock(&philo->data->death_lock);
 }
-void join_philo_threads(t_data *data, int count)
-{
-    int i = 0;
-    while (i < count)
-    {
-        if (pthread_join(data->philo[i].p_thread, NULL) != 0)
-            printf("Failed to join thread %d\n", i);
-        i++;
-    }
-}
 
+void	join_philo_threads(t_data *data, int count)
+{
+	int	i;
+
+	i = 0;
+	while (i < count)
+	{
+		if (pthread_join(data->philo[i].p_thread, NULL) != 0)
+			printf("Failed to join thread %d\n", i);
+		i++;
+	}
+}

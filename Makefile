@@ -1,9 +1,9 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -Werror -pthread -fsanitize=thread
+CFLAGS = -Wall -Wextra -Werror -pthread
 
 TARGET = philo
 
-SRCS = philo.c init.c parsing.c utils.c errors.c actions.c checks.c cleanup.c
+SRCS = philo.c init.c parsing.c utils.c errors.c actions.c checks.c cleanup.c routine.c
 
 OBJS = $(SRCS:.c=.o)
 

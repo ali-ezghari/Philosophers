@@ -66,6 +66,10 @@ int					data_init(t_data *data, char const *argv[]);
 int					philo_init(t_data *data);
 int					thread_init(t_data *data);
 
+// routine
+void				*philos(void *arg);
+void				*monitor_fun(void *arg);
+
 // costum functions
 int					p_eat(t_philo *philo);
 int					p_sleep(t_philo *philo);
