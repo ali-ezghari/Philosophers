@@ -28,12 +28,10 @@ bool exceed_time_to_die(t_data *data)
 
 bool all_eat_enough(t_data *data)
 {
-    int i;
     int full_philos;
 
     if (is_sim_end(data))
         return (true);
-    i = 0;
     pthread_mutex_lock(&data->meals_lock);
     full_philos = data->full_philos;
     pthread_mutex_unlock(&data->meals_lock);
@@ -46,16 +44,41 @@ bool all_eat_enough(t_data *data)
     }
     return (false);
 }
-int ft_sleep(long mill, t_data *data)
+void ft_sleep(long mill)
 {
     long start;
 
     start = get_time_in__ms();
     while ((get_time_in__ms() - start) < mill)
     {
-        // if (is_sim_end(data))
-        //     return (-1);
         usleep(200);
+    }
+}
+int is_sim_end(t_data *data)
+{
+	int result;
+
+	pthread_mutex_lock(&data->death_lock);
+	result = data->sim_end;
+	pthread_mutex_unlock(&data->death_lock);
+	return (result);
+}
+
+int check_number_meals(t_philo *philo)
+{
+    int times_eat;
+
+    if (philo->data->max_meals == -1)
+        return (0);
+    pthread_mutex_lock(&philo->data->meals_lock);
+    times_eat = philo->meals_eaten;
+    pthread_mutex_unlock(&philo->data->meals_lock);
+    if (philo->meals_eaten == times_eat)
+    {
+        pthread_mutex_lock(&philo->data->meals_lock);
+        philo->data->full_philos++;
+        pthread_mutex_unlock(&philo->data->meals_lock);
+        return (-1);
     }
     return (0);
 }

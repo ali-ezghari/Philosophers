@@ -30,16 +30,6 @@ void print_state(t_philo *philo, char *msg)
 	}
 }
 
-int is_sim_end(t_data *data)
-{
-	int result;
-
-	pthread_mutex_lock(&data->death_lock);
-	result = data->sim_end;
-	pthread_mutex_unlock(&data->death_lock);
-	return (result);
-}
-
 void one_philo_case(t_philo *philo)
 {
 	pthread_mutex_lock(philo->right_fork);
@@ -51,14 +41,14 @@ void one_philo_case(t_philo *philo)
 	philo->data->sim_end = true;
 	pthread_mutex_unlock(&philo->data->death_lock);
 }
-// void join_philo_threads(t_data *data, int count)
-// {
-//     int i = 0;
-//     while (i < count)
-//     {
-//         if (pthread_join(data->philo[i].p_thread, NULL) != 0)
-//             printf("Failed to join thread %d\n", i);
-//         i++;
-//     }
-// }
+void join_philo_threads(t_data *data, int count)
+{
+    int i = 0;
+    while (i < count)
+    {
+        if (pthread_join(data->philo[i].p_thread, NULL) != 0)
+            printf("Failed to join thread %d\n", i);
+        i++;
+    }
+}
 
