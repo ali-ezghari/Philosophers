@@ -29,13 +29,13 @@ int	data_init(t_data *data, char const *argv[])
 	data->full_philos = 0;
 	gettimeofday(&data->start_time, NULL);
 	if (pthread_mutex_init(&(data->meals_lock), NULL) != 0)
-		return (pthread_mutex_init(&(data->meals_lock), NULL),
+		return (destroy_free(data, 1337),
 			mutex_destroy_err());
 	if (pthread_mutex_init(&(data->write_lock), NULL) != 0)
-		return (pthread_mutex_init(&(data->write_lock), NULL),
+		return (destroy_free(data, 1),
 			mutex_destroy_err());
 	if (pthread_mutex_init(&(data->death_lock), NULL) != 0)
-		return (pthread_mutex_init(&(data->death_lock), NULL),
+		return (destroy_free(data, 2),
 			mutex_destroy_err());
 	return (0);
 }
